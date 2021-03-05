@@ -1,11 +1,9 @@
 import React from 'react';
-import { Button } from 'antd';
 import logo from './logo.svg';
 import './App.css';
 
 const App = (): JSX.Element => (
   <div className="App">
-    <Button type="primary">Primary Button 123</Button>
     <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
       <p>
