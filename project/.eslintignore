@@ -1,0 +1,6 @@
+dist/
+test
+build/
+public
+node_modules
+.eslint*
