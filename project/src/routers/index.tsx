@@ -1,47 +1,25 @@
-import React, { Component, ComponentType, ReactElement } from 'react';
-import {
-  Switch, Route,
-} from 'react-router-dom';
-import { Home, Test } from '../views/index';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import { routers } from './config';
 
-interface RouteType {
-  path: string,
-  component: ComponentType,
-}
+const NotFound: React.FunctionComponent = () => (<div>404</div>);
 
-export const routers: Array<RouteType> = [
-  {
-    path: '/',
-    component: Home,
-  },
-  {
-    path: '/test',
-    component: Test,
-  },
-];
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const Routers = () => (
+  <Switch>
+    {
+      routers.map((route) => (
+        <Route
+          exact
+          key={route.path}
+          path={route.path}
+          component={route.component}
+        />
+      ))
+    }
 
-class Routes extends Component {
-  constructor(props: any) {
-    super(props);
-    this.state = {};
-  }
+    <Route component={NotFound} />
+  </Switch>
+);
 
-  render(): ReactElement {
-    return (
-      <Switch>
-        {
-          routers.map((router) => (
-            <Route
-              exact
-              key={router.path}
-              path={router.path}
-              component={router.component}
-            />
-          ))
-        }
-      </Switch>
-    );
-  }
-}
-
-export default Routes;
+export { Routers };

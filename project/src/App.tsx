@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { PureComponent, ErrorInfo } from 'react';
+import { HashRouter as Router } from 'react-router-dom';
+import { notification } from 'antd';
+import { Routers } from './routers/index';
 
-const App = (): JSX.Element => (
-  <div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit
-        <code>src/App.tsx</code>
-        and save to reload.
-      </p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-    </header>
-  </div>
-);
+class App extends PureComponent {
+  componentDidCatch(error: Error, info: ErrorInfo): void {
+    notification.error({
+      message: 'something was error',
+      description: info.componentStack,
+      duration: 5,
+    });
+  }
 
-export default App;
+  render(): JSX.Element {
+    return (
+      <React.StrictMode>
+        <Router>
+          <Routers />
+        </Router>
+      </React.StrictMode>
+    );
+  }
+}
+
+export { App };
