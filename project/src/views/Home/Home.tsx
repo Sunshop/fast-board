@@ -12,23 +12,29 @@ interface MouseInfo {
   clientY: number,
 }
 
-type PathInfo = Array<string>;
+enum PathType {
+  line = 1,
+  img = 2,
+  txt = 3,
+}
+
+interface PathObj {
+  type: PathType,
+  val: string | Array<string>,
+}
+
+type PathInfo = Array<PathObj>;
 
 let isDown = false;
 let timer: any = null;
 
 const Home: React.FC = () => {
-  const [User, setUser] = useState('fast');
   const [X_Y, setXY] = useState<LocationInfo>({ x: 0, y: 0 });
   const [Path, setPath] = useState<PathInfo>([]);
 
   useEffect(() => {
     document.title = '画板';
   });
-
-  useEffect(() => {
-    console.log('useEffect', Path);
-  }, [Path]);
 
   const handleMouseMove = (e: MouseInfo) => {
     if (timer) return;
@@ -50,22 +56,18 @@ const Home: React.FC = () => {
     }, 20);
   };
 
-  const handleMouseDown = (e: any) => {
-    console.log(e);
+  const handleMouseDown = () => {
     isDown = true;
   };
 
-  const handleMouseUp = (e: any) => {
-    console.log(e);
+  const handleMouseUp = () => {
     isDown = false;
   };
 
-  const handleMouseOver = (e: any) => {
-    console.log(e);
+  const handleMouseOver = () => {
   };
 
-  const handleMouseOut = (e: any) => {
-    console.log(e);
+  const handleMouseOut = () => {
     isDown = false;
   };
 
@@ -73,7 +75,14 @@ const Home: React.FC = () => {
     const d = Path.join(' ');
     return (
       <svg width="100%" height="100%">
-        <path d={`${d}`} stroke="red" strokeWidth="3" strokeLinejoin="round" fill="none" />
+        {
+          Path.map((item) => {
+            if (item.type === 1) {
+              return <path d={`${d}`} stroke="red" strokeWidth="3" strokeLinejoin="round" fill="none" />;
+            }
+            return <path d={`${d}`} stroke="red" strokeWidth="3" strokeLinejoin="round" fill="none" />;
+          })
+        }
       </svg>
     );
   };
@@ -84,8 +93,8 @@ const Home: React.FC = () => {
       <div
         ref={ref}
         style={{
-          width: '1500px',
-          height: '500px',
+          width: '100%',
+          height: '100%',
           backgroundColor: '#999',
           position: 'relative',
         }}
@@ -111,18 +120,7 @@ const Home: React.FC = () => {
           }
         </div>
       </div>
-
       <Link to="/test">test</Link>
-      <h1>Fast board</h1>
-      <button
-        type="button"
-        onClick={() => setUser('Fast board')}
-      >
-        change
-      </button>
-      {
-        User
-      }
       <ToolBar />
     </div>
   );
