@@ -27,6 +27,7 @@ type PathInfo = Array<PathObj>;
 
 let isDown = false;
 let timer: any = null;
+// test
 
 const Home: React.FC = () => {
   const [X_Y, setXY] = useState<LocationInfo>({ x: 0, y: 0 });
