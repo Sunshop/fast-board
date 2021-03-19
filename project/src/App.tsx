@@ -12,13 +12,11 @@ class App extends PureComponent {
     });
   }
 
-  render(): JSX.Element {
+  render(): React.ReactNode {
     return (
-      <React.StrictMode>
-        <Router>
-          <Routers />
-        </Router>
-      </React.StrictMode>
+      <Router>
+        <Routers />
+      </Router>
     );
   }
 }

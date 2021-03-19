@@ -1,6 +1,14 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
 import { withRouter, Link } from 'react-router-dom';
+import { Button } from 'antd';
+import { useSelector, useDispatch } from 'react-redux';
 import { ToolBar } from './ToolBar/ToolBar';
+import { Board } from '../../components/Board/Board';
+import { RootState } from '../../store/index';
 
 interface LocationInfo {
   x: number,
@@ -27,11 +35,13 @@ type PathInfo = Array<PathObj>;
 
 let isDown = false;
 let timer: any = null;
-// test
 
 const Home: React.FC = () => {
   const [X_Y, setXY] = useState<LocationInfo>({ x: 0, y: 0 });
   const [Path, setPath] = useState<PathInfo>([]);
+
+  const lineInfo = useSelector((state: RootState) => state.Line);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     document.title = '画板';
@@ -44,15 +54,15 @@ const Home: React.FC = () => {
         x: e.clientX,
         y: e.clientY,
       });
-      if (isDown) {
-        if (Path.length) {
-          Path.push(`L${e.clientX} ${e.clientY}`);
-        } else {
-          Path.push(`M${e.clientX} ${e.clientY}`);
-        }
-        const newPath = Path.concat();
-        setPath(newPath);
-      }
+      // if (isDown) {
+      //   if (Path.length) {
+      //     Path.push(`L${e.clientX} ${e.clientY}`);
+      //   } else {
+      //     Path.push(`M${e.clientX} ${e.clientY}`);
+      //   }
+      //   const newPath = Path.concat();
+      //   setPath(newPath);
+      // }
       timer = null;
     }, 20);
   };
@@ -72,57 +82,24 @@ const Home: React.FC = () => {
     isDown = false;
   };
 
-  const creatPath = () => {
-    const d = Path.join(' ');
-    return (
-      <svg width="100%" height="100%">
-        {
-          Path.map((item) => {
-            if (item.type === 1) {
-              return <path d={`${d}`} stroke="red" strokeWidth="3" strokeLinejoin="round" fill="none" />;
-            }
-            return <path d={`${d}`} stroke="red" strokeWidth="3" strokeLinejoin="round" fill="none" />;
-          })
-        }
-      </svg>
-    );
+  const change = () => {
+    dispatch({
+      type: 'changeLineWeight',
+      value: 3,
+    });
   };
 
-  const ref = useRef(null);
   return (
     <div>
-      <div
-        ref={ref}
-        style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#999',
-          position: 'relative',
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseDown={handleMouseDown}
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseOut}
-        onMouseUp={handleMouseUp}
-      >
-        {
-          creatPath()
-        }
-        <div
-          style={{
-            color: 'blue',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          }}
-        >
-          {
-            `${X_Y.x}--${X_Y.y}`
-          }
-        </div>
-      </div>
+      <Board />
+      {
+        `${lineInfo.weight}__${lineInfo.color}_`
+      }
       <Link to="/test">test</Link>
-      <ToolBar />
+      <Button type="primary" onClick={change}>
+        Open the notification box
+      </Button>
+      {/* <ToolBar /> */}
     </div>
   );
 };
