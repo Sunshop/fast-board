@@ -1,4 +1,3 @@
-type ChangeLineWeightType = 'changeLineWeight';
 export const KEY_CHANAGELINEWEIGHT: ChangeLineWeightType = 'changeLineWeight';
 export interface ChangeLineWeightActionType {
   type: ChangeLineWeightType,
