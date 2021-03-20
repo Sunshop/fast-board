@@ -1,8 +1,6 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, {
-  useRef,
   useState,
-  useEffect,
+  // useEffect,
 } from 'react';
 import './Board.less';
 import { withRouter } from 'react-router-dom';
@@ -10,47 +8,85 @@ import { Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/index';
 import { ActionType } from '../../store/actions/Line';
-import { PathListType, LineType, SvgContentType } from './BoardType';
+import {
+  PathInfoType,
+  PathListType,
+  LineType,
+  SvgContentType,
+} from './BoardType';
 
-const handleMouseMove = (e: any) => {};
-
-const handleMouseDown = () => {};
-
-const handleMouseUp = () => {};
-
-const handleMouseOver = () => {};
-
-const handleMouseOut = () => {};
+let isDown = false;
+let timer: NodeJS.Timeout | null;
 
 const BoardFC: React.FC = () => {
   const [pathList, setPathList] = useState<PathListType>([]);
-  const lineInfo = useSelector((state: RootState) => state.Line);
+  const LineInfoStore = useSelector((state: RootState) => state.Line);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log('pathList', pathList);
-  });
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (timer) return;
+    timer = setTimeout(() => {
+      // console.log('handleMouseMove', e);
+      if (isDown) {
+        const LastPath = pathList[pathList.length - 1];
+        (LastPath.value as LineType).d += `${(LastPath.value as LineType).d ? 'L' : 'M'}${e.clientX} ${e.clientY} `;
+        setPathList([...pathList]);
+      }
+      timer = null;
+    }, 10);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    console.log('handleMouseDown', e);
+    isDown = true;
+    const newPath: PathInfoType = {
+      type: SvgContentType.line,
+      value: {
+        id: `L_${Date.now()}`,
+        d: '',
+      },
+    };
+    pathList.push(newPath);
+    console.log(pathList);
+    setPathList([...pathList]);
+  };
+
+  const handleMouseUp = () => {
+    console.log('handleMouseUp');
+    isDown = false;
+  };
+
+  const handleMouseEnter = () => {
+    console.log('进来 enter');
+  };
+
+  const handleMouseLeave = () => {
+    console.log('离开 leave');
+    isDown = false;
+  };
 
   const createPath = () => {
-    console.log('123');
+    console.log('pathList', pathList);
     return (
       <>
         {
-          pathList.map((item, index) => {
+          pathList.map((item) => {
             switch (item.type) {
               case SvgContentType.line: {
                 return (
                   <path
-                    key={`${index + 1}`}
+                    key={(item.value as LineType).id}
                     id={(item.value as LineType).id}
                     d={(item.value as LineType).d}
+                    fill="none"
+                    stroke="red"
+                    strokeWidth="3"
+                    strokeLinejoin="round"
                   />
                 );
               }
               default:
-                return (
-                  <div>456</div>
-                );
+                return <></>;
             }
           })
         }
@@ -64,36 +100,18 @@ const BoardFC: React.FC = () => {
       value: 'red',
     };
     dispatch(params);
-    const test: PathListType = [
-      {
-        type: SvgContentType.line,
-        value: {
-          id: 'Key',
-          d: 'M150 0 L75 200 L225 200 Z',
-        },
-      },
-    ];
-    setPathList(test);
   };
 
   return (
     <div
       className="svg-container"
       onMouseMove={(e) => handleMouseMove(e)}
-      onMouseDown={handleMouseDown}
-      onMouseEnter={handleMouseOver}
-      onMouseLeave={handleMouseOut}
+      onMouseDown={(e) => handleMouseDown(e)}
       onMouseUp={handleMouseUp}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <svg width="100%" height="100%">
-        <circle
-          cx="200"
-          cy="200"
-          r="40"
-          stroke="black"
-          strokeWidth="2"
-          fill="red"
-        />
         {
           createPath()
         }
@@ -105,12 +123,13 @@ const BoardFC: React.FC = () => {
           left: 0,
         }}
       >
-        {
-          `board_${lineInfo.weight}__${lineInfo.color}_`
-        }
         <Button type="primary" onClick={change}>
-          Open the notification box
+          TEST
         </Button>
+        <br />
+        {
+          `board_lineWeight:${LineInfoStore.weight}__lineColor:${LineInfoStore.color}`
+        }
       </div>
     </div>
   );
