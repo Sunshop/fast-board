@@ -6,7 +6,6 @@
 import {
   KEY_CHANAGELINEWEIGHT,
   KEY_CHANAGELINECOLOR,
-  ActionType,
 } from '../actions/Line';
 
 interface LineInfo {
@@ -22,7 +21,7 @@ const lineWeightInitState: LineInfo = {
   color: '#000',
 };
 
-const LineReducer = (state: LineInfo = lineWeightInitState, action: ActionType): LineInfo => {
+const LineReducer = (state: LineInfo = lineWeightInitState, action: Line.ActionType): LineInfo => {
   switch (action.type) {
     case KEY_CHANAGELINEWEIGHT: {
       console.log('CHANAGELINEWEIGHT', state, action);

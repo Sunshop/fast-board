@@ -1,19 +1,12 @@
 import React, {
   useState,
-  // useEffect,
+  useEffect,
 } from 'react';
 import './Board.less';
 import { withRouter } from 'react-router-dom';
 import { Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/index';
-import { ActionType } from '../../store/actions/Line';
-import {
-  PathInfoType,
-  PathListType,
-  LineType,
-  SvgContentType,
-} from './BoardType';
 
 let isDown = false;
 let timer: NodeJS.Timeout | null;
@@ -36,11 +29,15 @@ const BoardFC: React.FC = () => {
     }, 10);
   };
 
+  useEffect(() => {
+    console.log(pathList);
+  });
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log('handleMouseDown', e);
     isDown = true;
     const newPath: PathInfoType = {
-      type: SvgContentType.line,
+      type: 'line',
       value: {
         id: `L_${Date.now()}`,
         d: '',
@@ -72,7 +69,7 @@ const BoardFC: React.FC = () => {
         {
           pathList.map((item) => {
             switch (item.type) {
-              case SvgContentType.line: {
+              case 'line': {
                 return (
                   <path
                     key={(item.value as LineType).id}
@@ -95,7 +92,7 @@ const BoardFC: React.FC = () => {
   };
 
   const change = () => {
-    const params: ActionType = {
+    const params: Line.ActionType = {
       type: 'changeLineColor',
       value: 'red',
     };
