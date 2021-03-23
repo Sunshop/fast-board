@@ -8,20 +8,18 @@ import {
   KEY_CHANAGELINECOLOR,
 } from '../actions/Line';
 
-interface LineInfo {
-  weight: number,
-  color: string,
-}
-
 /**
  * 颜色为 十六进制
  */
-const lineWeightInitState: LineInfo = {
+const lineWeightInitState: LineInfoType = {
+  id: '123',
+  path: '',
   weight: 1,
-  color: '#000',
+  color: '',
+  type: '',
 };
 
-const LineReducer = (state: LineInfo = lineWeightInitState, action: Line.ActionType): LineInfo => {
+const LineReducer = (state: LineInfoType = lineWeightInitState, action: Line.ActionType): LineInfoType => {
   switch (action.type) {
     case KEY_CHANAGELINEWEIGHT: {
       console.log('CHANAGELINEWEIGHT', state, action);

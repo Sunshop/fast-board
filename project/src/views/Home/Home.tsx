@@ -2,7 +2,8 @@ import React, {
   useEffect,
 } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Board } from '../../components/Board/Board';
+import { Board } from '@/components/Board/Board';
+import { ToolBar } from '@/components/ToolBar/ToolBar';
 
 const Home: React.FC = () => {
   useEffect(() => {
@@ -12,6 +13,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <Board />
+      <ToolBar />
     </div>
   );
 };

@@ -14,15 +14,18 @@
 //   [P in keyof T]?: T[P];
 // };
 
-declare type SvgContentType = 'line' | 'img' | 'text';
+declare type SvgContentType = 'line' | 'img' | 'text' | 'tip';
 
-interface LineType {
+interface LineInfoType {
   id: string,
-  d: string,
-  stroke?: string, // 颜色
-  strokeWidth?: string, // 粗细
-  strokeLinecap?: string, // 不同类型的开放路径的终结
-  strokeDasharray?: string, // 虚线
+  path: string, // 路径
+  weight: number, // 粗度
+  color: string, // 颜色
+  type: string, // 实虚线
+  // stroke?: string, // 颜色
+  // strokeWidth?: string, // 粗细
+  // strokeLinecap?: string, // 不同类型的开放路径的终结 默认圆形
+  // strokeDasharray?: string, // 虚线
 }
 
 interface ImgType {
@@ -32,7 +35,7 @@ interface ImgType {
 
 interface PathInfoType {
   type: SvgContentType,
-  value: LineType | ImgType,
+  value: LineInfoType | ImgType,
 }
 
 declare type PathListType = Array<PathInfoType>;

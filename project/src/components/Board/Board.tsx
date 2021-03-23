@@ -6,7 +6,7 @@ import './Board.less';
 import { withRouter } from 'react-router-dom';
 import { Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store/index';
+import { RootState } from '@/store/index';
 
 let isDown = false;
 let timer: NodeJS.Timeout | null;
@@ -22,7 +22,7 @@ const BoardFC: React.FC = () => {
       // console.log('handleMouseMove', e);
       if (isDown) {
         const LastPath = pathList[pathList.length - 1];
-        (LastPath.value as LineType).d += `${(LastPath.value as LineType).d ? 'L' : 'M'}${e.clientX} ${e.clientY} `;
+        (LastPath.value as LineInfoType).path += `${(LastPath.value as LineInfoType).path ? 'L' : 'M'}${e.clientX} ${e.clientY} `;
         setPathList([...pathList]);
       }
       timer = null;
@@ -31,6 +31,7 @@ const BoardFC: React.FC = () => {
 
   useEffect(() => {
     console.log(pathList);
+    console.log(LineInfoStore);
   });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -40,11 +41,13 @@ const BoardFC: React.FC = () => {
       type: 'line',
       value: {
         id: `L_${Date.now()}`,
-        d: '',
+        path: '',
+        weight: 3,
+        color: 'red',
+        type: '1',
       },
     };
     pathList.push(newPath);
-    console.log(pathList);
     setPathList([...pathList]);
   };
 
@@ -72,9 +75,9 @@ const BoardFC: React.FC = () => {
               case 'line': {
                 return (
                   <path
-                    key={(item.value as LineType).id}
-                    id={(item.value as LineType).id}
-                    d={(item.value as LineType).d}
+                    key={(item.value as LineInfoType).id}
+                    id={(item.value as LineInfoType).id}
+                    d={(item.value as LineInfoType).path}
                     fill="none"
                     stroke="red"
                     strokeWidth="3"
