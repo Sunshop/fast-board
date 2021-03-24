@@ -15,3 +15,13 @@ declare namespace Line {
     value: string,
   }
 }
+
+declare namespace CurType {
+  type ChangeCurType = 'changeCurType';
+  type ActionType = ChangeLineWeightActionType;
+
+  interface ChangeCurTypeActionType {
+    type: ChangeCurType,
+    value: SvgContentType,
+  }
+}

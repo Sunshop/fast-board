@@ -1,120 +1,146 @@
-import React, { useState, useEffect } from 'react';
+import { RootState } from '@/store';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import {
+  MemoIconFc,
+  ToolObjType,
+  ToolChildType,
+  ToolListType,
+} from './Common';
 import './ToolBar.less';
 
-interface ToolObjType {
-  id: string,
-  icon: string,
-  actIcon: string,
-  key: string,
-  action: string,
-}
-
-type ToolChildType = ToolObjType[];
-
-type ToolListType = ToolChildType[];
+const initToolObj: ToolObjType = {
+  id: '',
+  icon: '',
+  actIcon: '',
+  key: 'line',
+  action: '',
+};
 
 const lineToolList: ToolListType = [
   [
     {
       id: '1',
-      icon: 'http://ps.veazer.cn/images/pencil.png',
-      actIcon: 'http://ps.veazer.cn/images/pencil-act.png',
-      key: '11',
-      action: '11',
+      icon: '//ps.veazer.cn/images/pencil.png',
+      actIcon: '//ps.veazer.cn/images/pencil-act.png',
+      key: 'line',
+      action: '',
     },
     {
       id: '2',
-      icon: 'http://ps.veazer.cn/images/pencil.png',
-      actIcon: 'http://ps.veazer.cn/images/pencil-act.png',
-      key: '2',
-      action: '2',
+      icon: '//ps.veazer.cn/images/line-alt.png',
+      actIcon: '//ps.veazer.cn/images/line-alt-act.png',
+      key: 'line',
+      action: '',
+    },
+  ],
+  [
+    {
+      id: '3',
+      icon: '//ps.veazer.cn/images/pencil.png',
+      actIcon: '//ps.veazer.cn/images/pencil-act.png',
+      key: 'img',
+      action: '',
+    },
+    {
+      id: '4',
+      icon: '//ps.veazer.cn/images/line-alt.png',
+      actIcon: '//ps.veazer.cn/images/line-alt-act.png',
+      key: 'img',
+      action: '',
     },
   ],
 ];
 
-const preloadFn = (list: ToolChildType) => {
-  const imgList: string[] = [];
-  list.forEach((item) => {
-    imgList.push(item.icon);
-    imgList.push(item.actIcon);
-  });
-  imgList.forEach((v) => {
-    const img = new Image();
-    img.src = v;
-  });
-};
-
-interface SimpleType {
+interface ToolItemType {
   list: ToolChildType,
 }
 
-const Simple: React.FC<SimpleType> = (props: SimpleType) => {
+const ToolItem: React.FC<ToolItemType> = (props: ToolItemType) => {
   const { list } = props;
-  const [show, setShow] = useState(false);
-  const [main, setMain] = useState<ToolObjType>();
+  const [childShow, setChildShow] = useState(false);
+  const [childShowIndex, setChildShowIndex] = useState(-1);
+  const CurTypeStore = useSelector((state: RootState) => (state.CurType));
+  const [main, setMain] = useState<ToolObjType>(initToolObj);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setMain(list[0]);
-    preloadFn(list); // 预加载icon
-  });
+    console.log(CurTypeStore);
+  }, []);
+
+  const setMainFn = (item: ToolObjType) => {
+    setMain(item);
+    setChildShow(false);
+    console.log(item.key);
+    const params: CurType.ChangeCurTypeActionType = {
+      type: 'changeCurType',
+      value: item.key,
+    };
+    dispatch(params);
+  };
+
+  console.log('ToolItem render');
 
   return (
     <div
       className="tool-item"
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-      key={main?.key}
+      onMouseEnter={() => setChildShow(true)}
+      onMouseLeave={() => setChildShow(false)}
+      key={main?.id}
     >
       <div className="main">
-        <div
-          className="icon-main"
-          style={{
-            visibility: (show ? 'hidden' : 'visible'),
-            backgroundImage: `url(${main?.icon})`,
-            backgroundSize: '100% 100%',
-          }}
-        />
-        <div
-          className="icon-main"
-          style={{
-            visibility: (show ? 'visible' : 'hidden'),
-            backgroundImage: `url(${main?.actIcon})`,
-            backgroundSize: '100% 100%',
-          }}
+        <MemoIconFc
+          item={useMemo(() => ({
+            show: childShow || CurTypeStore.curType === main.key,
+            icon: main.icon,
+            actIcon: main.actIcon,
+          }), [childShow, main, CurTypeStore.curType])}
         />
       </div>
-      <div className="child-box" style={{ display: (show ? 'block' : 'none') }}>
+      <div className={`child-box ${childShow ? 'show' : ''}`} key="index">
         <div className="child-content">
           {
-            list.map((item) => (
-              <div className="child-item">
-                123
+            list.map((item, index) => (
+              <div
+                className="child-item"
+                key={item.id}
+                onMouseEnter={() => setChildShowIndex(index)}
+                onMouseLeave={() => setChildShowIndex(-1)}
+                onClick={() => setMainFn(item)}
+              >
+                <MemoIconFc
+                  item={useMemo(() => ({
+                    show: index === childShowIndex,
+                    icon: item.icon,
+                    actIcon: item.actIcon,
+                  }), [item, childShowIndex])}
+                />
               </div>
             ))
           }
         </div>
+        <div className="arrow" />
       </div>
     </div>
   );
 };
 
 const ToolBox: React.FC = () => {
-  const Content = (list: ToolListType) => (
-    <>
-      {
-        list.map((item) => <Simple key={`${Date.now()}123`} list={item} />)
-      }
-    </>
-  );
-
-  console.log('123');
+  console.log('ToolBox effect');
   return (
     <div className="tool-container">
       {
-        Content(lineToolList)
+        lineToolList.map((item) => <ToolItem list={item} />)
       }
-      <div className="tool-wrapper">颜色</div>
+      {/* <div className="tool-wrapper">颜色</div> */}
     </div>
   );
 };

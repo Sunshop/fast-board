@@ -13,7 +13,7 @@ let timer: NodeJS.Timeout | null;
 
 const BoardFC: React.FC = () => {
   const [pathList, setPathList] = useState<PathListType>([]);
-  const LineInfoStore = useSelector((state: RootState) => state.Line);
+  const LineInfoStore = useSelector((state: RootState) => (state));
   const dispatch = useDispatch();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -32,7 +32,7 @@ const BoardFC: React.FC = () => {
   useEffect(() => {
     console.log(pathList);
     console.log(LineInfoStore);
-  });
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log('handleMouseDown', e);
@@ -127,9 +127,9 @@ const BoardFC: React.FC = () => {
           TEST
         </Button>
         <br />
-        {
+        {/* {
           `board_lineWeight:${LineInfoStore.weight}__lineColor:${LineInfoStore.color}`
-        }
+        } */}
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ interface LineInfoType {
   path: string, // 路径
   weight: number, // 粗度
   color: string, // 颜色
-  type: string, // 实虚线
+  type: string, // 实虚线 形状
   // stroke?: string, // 颜色
   // strokeWidth?: string, // 粗细
   // strokeLinecap?: string, // 不同类型的开放路径的终结 默认圆形
@@ -31,6 +31,7 @@ interface LineInfoType {
 interface ImgType {
   id: string,
   imgUrl: string,
+  type: string,
 }
 
 interface PathInfoType {
