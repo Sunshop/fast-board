@@ -1,6 +1,7 @@
 import React, {
-  useEffect,
   memo,
+  useState,
+  useMemo,
 } from 'react';
 
 export interface ToolObjType {
@@ -52,7 +53,43 @@ const IconFc: React.FC<IconFnType> = (props: IconFnType) => {
 };
 
 const MemoIconFc = memo(IconFc);
+interface ChildContentType {
+  list: ToolChildType,
+  onSelect: (item: ToolObjType) => void,
+}
+
+const ChildContent: React.FC<ChildContentType> = (props: ChildContentType) => {
+  const { list, onSelect } = props;
+  const [childShowIndex, setChildShowIndex] = useState(-1);
+
+  return (
+    <div className="child-content">
+      {
+        list.map((item, index) => (
+          <div
+            className="child-item"
+            key={item.id}
+            onMouseEnter={() => setChildShowIndex(index)}
+            onMouseLeave={() => setChildShowIndex(-1)}
+            onClick={() => onSelect(item)}
+          >
+            <MemoIconFc
+              item={useMemo(() => ({
+                show: index === childShowIndex,
+                icon: item.icon,
+                actIcon: item.actIcon,
+              }), [childShowIndex])}
+            />
+          </div>
+        ))
+      }
+    </div>
+  );
+};
+
+const MemoChildContent = memo(ChildContent);
 
 export {
   MemoIconFc,
+  MemoChildContent,
 };

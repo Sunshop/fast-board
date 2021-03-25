@@ -1,7 +1,6 @@
 import { RootState } from '@/store';
 import React, {
   useState,
-  useEffect,
   useMemo,
   useCallback,
 } from 'react';
@@ -9,19 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
   MemoIconFc,
+  MemoChildContent,
   ToolObjType,
   ToolChildType,
   ToolListType,
 } from './Common';
 import './ToolBar.less';
-
-const initToolObj: ToolObjType = {
-  id: '',
-  icon: '',
-  actIcon: '',
-  key: 'line',
-  action: '',
-};
 
 const lineToolList: ToolListType = [
   [
@@ -65,36 +57,24 @@ interface ToolItemType {
 const ToolItem: React.FC<ToolItemType> = (props: ToolItemType) => {
   const { list } = props;
   const [childShow, setChildShow] = useState(false);
-  const [childShowIndex, setChildShowIndex] = useState(-1);
   const CurTypeStore = useSelector((state: RootState) => (state.CurType));
-  const [main, setMain] = useState<ToolObjType>(initToolObj);
-
+  const [main, setMain] = useState<ToolObjType>(list[0]);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setMain(list[0]);
-    console.log(CurTypeStore);
-  }, []);
-
-  const setMainFn = (item: ToolObjType) => {
+  const setMainFn = useCallback((item: ToolObjType) => {
     setMain(item);
-    setChildShow(false);
-    console.log(item.key);
     const params: CurType.ChangeCurTypeActionType = {
       type: 'changeCurType',
       value: item.key,
     };
     dispatch(params);
-  };
-
-  console.log('ToolItem render');
+  }, []);
 
   return (
     <div
       className="tool-item"
       onMouseEnter={() => setChildShow(true)}
       onMouseLeave={() => setChildShow(false)}
-      key={main?.id}
     >
       <div className="main">
         <MemoIconFc
@@ -106,27 +86,7 @@ const ToolItem: React.FC<ToolItemType> = (props: ToolItemType) => {
         />
       </div>
       <div className={`child-box ${childShow ? 'show' : ''}`} key="index">
-        <div className="child-content">
-          {
-            list.map((item, index) => (
-              <div
-                className="child-item"
-                key={item.id}
-                onMouseEnter={() => setChildShowIndex(index)}
-                onMouseLeave={() => setChildShowIndex(-1)}
-                onClick={() => setMainFn(item)}
-              >
-                <MemoIconFc
-                  item={useMemo(() => ({
-                    show: index === childShowIndex,
-                    icon: item.icon,
-                    actIcon: item.actIcon,
-                  }), [item, childShowIndex])}
-                />
-              </div>
-            ))
-          }
-        </div>
+        <MemoChildContent list={useMemo(() => (list), [])} onSelect={setMainFn} />
         <div className="arrow" />
       </div>
     </div>
