@@ -4,8 +4,7 @@ import React, {
 } from 'react';
 import './Board.less';
 import { withRouter } from 'react-router-dom';
-import { Button } from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '@/store/index';
 
 let isDown = false;
@@ -14,7 +13,6 @@ let timer: NodeJS.Timeout | null;
 const BoardFC: React.FC = () => {
   const [pathList, setPathList] = useState<PathListType>([]);
   const LineInfoStore = useSelector((state: RootState) => (state));
-  const dispatch = useDispatch();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (timer) return;
@@ -30,7 +28,6 @@ const BoardFC: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(pathList);
     console.log(LineInfoStore);
   }, []);
 
@@ -94,14 +91,6 @@ const BoardFC: React.FC = () => {
     );
   };
 
-  const change = () => {
-    const params: Line.ActionType = {
-      type: 'changeLineColor',
-      value: 'red',
-    };
-    dispatch(params);
-  };
-
   return (
     <div
       className="svg-container"
@@ -123,10 +112,6 @@ const BoardFC: React.FC = () => {
           left: 0,
         }}
       >
-        <Button type="primary" onClick={change}>
-          TEST
-        </Button>
-        <br />
         {/* {
           `board_lineWeight:${LineInfoStore.weight}__lineColor:${LineInfoStore.color}`
         } */}

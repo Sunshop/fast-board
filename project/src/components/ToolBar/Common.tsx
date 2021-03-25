@@ -9,7 +9,6 @@ export interface ToolObjType {
   icon: string,
   actIcon: string,
   key: SvgContentType,
-  action: string,
 }
 export type ToolChildType = ToolObjType[];
 export type ToolListType = ToolChildType[];

@@ -22,30 +22,28 @@ const lineToolList: ToolListType = [
       icon: '//ps.veazer.cn/images/pencil.png',
       actIcon: '//ps.veazer.cn/images/pencil-act.png',
       key: 'line',
-      action: '',
     },
     {
       id: '2',
       icon: '//ps.veazer.cn/images/line-alt.png',
       actIcon: '//ps.veazer.cn/images/line-alt-act.png',
       key: 'line',
-      action: '',
     },
   ],
   [
     {
       id: '3',
-      icon: '//ps.veazer.cn/images/pencil.png',
-      actIcon: '//ps.veazer.cn/images/pencil-act.png',
+      icon: '//ps.veazer.cn/images/img.png',
+      actIcon: '//ps.veazer.cn/images/img-act.png',
       key: 'img',
-      action: '',
     },
+  ],
+  [
     {
       id: '4',
-      icon: '//ps.veazer.cn/images/line-alt.png',
-      actIcon: '//ps.veazer.cn/images/line-alt-act.png',
-      key: 'img',
-      action: '',
+      icon: '//ps.veazer.cn/images/tip.png',
+      actIcon: '//ps.veazer.cn/images/tip-act.png',
+      key: 'tip',
     },
   ],
 ];
@@ -61,14 +59,24 @@ const ToolItem: React.FC<ToolItemType> = (props: ToolItemType) => {
   const [main, setMain] = useState<ToolObjType>(list[0]);
   const dispatch = useDispatch();
 
-  const setMainFn = useCallback((item: ToolObjType) => {
-    setMain(item);
+  const upCurType = (e: SvgContentType) => {
     const params: CurType.ChangeCurTypeActionType = {
       type: 'changeCurType',
-      value: item.key,
+      value: e,
     };
     dispatch(params);
-  }, []);
+  };
+
+  const onSelectFn = useCallback((item: ToolObjType) => {
+    setMain(item);
+    console.log(item.key);
+    console.log(CurTypeStore);
+    upCurType(item.key);
+  }, [CurTypeStore]);
+
+  const mainClick = (e: ToolObjType) => {
+    upCurType(e.key);
+  };
 
   return (
     <div
@@ -76,7 +84,7 @@ const ToolItem: React.FC<ToolItemType> = (props: ToolItemType) => {
       onMouseEnter={() => setChildShow(true)}
       onMouseLeave={() => setChildShow(false)}
     >
-      <div className="main">
+      <div className="main" onClick={() => mainClick(main)}>
         <MemoIconFc
           item={useMemo(() => ({
             show: childShow || CurTypeStore.curType === main.key,
@@ -85,10 +93,14 @@ const ToolItem: React.FC<ToolItemType> = (props: ToolItemType) => {
           }), [childShow, main, CurTypeStore.curType])}
         />
       </div>
-      <div className={`child-box ${childShow ? 'show' : ''}`} key="index">
-        <MemoChildContent list={useMemo(() => (list), [])} onSelect={setMainFn} />
-        <div className="arrow" />
-      </div>
+      {
+        list.length > 1 && (
+          <div className={`child-box ${childShow ? 'show' : ''}`} key="index">
+            <MemoChildContent list={useMemo(() => (list), [])} onSelect={onSelectFn} />
+            <div className="arrow" />
+          </div>
+        )
+      }
     </div>
   );
 };
@@ -98,7 +110,7 @@ const ToolBox: React.FC = () => {
   return (
     <div className="tool-container">
       {
-        lineToolList.map((item) => <ToolItem list={item} />)
+        lineToolList.map((item, index) => <ToolItem key={index.toString()} list={item} />)
       }
       {/* <div className="tool-wrapper">颜色</div> */}
     </div>
