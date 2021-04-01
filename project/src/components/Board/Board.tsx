@@ -1,26 +1,47 @@
 import React, {
   useState,
   useEffect,
+  useCallback,
 } from 'react';
 import './Board.less';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/index';
+import { MemoClearAll } from './ClearAll';
+
+interface XyType {
+  x: number,
+  y: number,
+}
 
 let isDown = false;
 let timer: NodeJS.Timeout | null;
 
 const BoardFC: React.FC = () => {
   const [pathList, setPathList] = useState<PathListType>([]);
+  const [xy, setXY] = useState<XyType>({ x: 0, y: 0 });
   const LineInfoStore = useSelector((state: RootState) => (state));
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    // setXY({ x: e.clientX, y: e.clientY });
     if (timer) return;
     timer = setTimeout(() => {
       // console.log('handleMouseMove', e);
       if (isDown) {
+        const { CurType: { curType = '' } } = LineInfoStore;
         const LastPath = pathList[pathList.length - 1];
-        (LastPath.value as LineInfoType).path += `${(LastPath.value as LineInfoType).path ? 'L' : 'M'}${e.clientX} ${e.clientY} `;
+        if (curType === 'handLine') {
+          (LastPath.value as LineInfoType).path += `${(LastPath.value as LineInfoType).path ? 'L' : 'M'}${e.clientX} ${e.clientY} `;
+        } else if (curType === 'straightLine') {
+          if (!(LastPath.value as LineInfoType).path) {
+            (LastPath.value as LineInfoType).path = `M${e.clientX} ${e.clientY}`;
+          } else {
+            const first = (LastPath.value as LineInfoType).path.split(' ');
+            const x = first[0].substr(1);
+            const y = first[1];
+            (LastPath.value as LineInfoType).path = `M${x} ${y} L${e.clientX} ${e.clientY}`;
+          }
+        }
         setPathList([...pathList]);
       }
       timer = null;
@@ -28,23 +49,26 @@ const BoardFC: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(LineInfoStore);
-  }, []);
+    console.log('LineInfoStore', LineInfoStore);
+  });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     console.log('handleMouseDown', e);
     isDown = true;
-    const newPath: PathInfoType = {
-      type: 'line',
-      value: {
-        id: `L_${Date.now()}`,
-        path: '',
-        weight: 3,
-        color: 'red',
-        type: '1',
-      },
-    };
-    pathList.push(newPath);
+    const { CurType: { parent = '' }, Line } = LineInfoStore;
+    if (parent === 'line') {
+      const newPath: PathInfoType = {
+        type: 'line',
+        value: {
+          id: `L_${Date.now()}`,
+          path: '',
+          weight: Line.weight,
+          color: Line.color,
+          type: '1',
+        },
+      };
+      pathList.push(newPath);
+    }
     setPathList([...pathList]);
   };
 
@@ -76,9 +100,10 @@ const BoardFC: React.FC = () => {
                     id={(item.value as LineInfoType).id}
                     d={(item.value as LineInfoType).path}
                     fill="none"
-                    stroke="red"
-                    strokeWidth="3"
+                    stroke={(item.value as LineInfoType).color}
+                    strokeWidth={(item.value as LineInfoType).weight}
                     strokeLinejoin="round"
+                    strokeLinecap="round"
                   />
                 );
               }
@@ -90,6 +115,11 @@ const BoardFC: React.FC = () => {
       </>
     );
   };
+
+  // 抹除按钮
+  const handleClear = useCallback(() => {
+    setPathList([]);
+  }, []);
 
   return (
     <div
@@ -112,10 +142,11 @@ const BoardFC: React.FC = () => {
           left: 0,
         }}
       >
-        {/* {
-          `board_lineWeight:${LineInfoStore.weight}__lineColor:${LineInfoStore.color}`
-        } */}
+        {
+          `x:${xy.x}__y:${xy.y}`
+        }
       </div>
+      <MemoClearAll onClear={handleClear} />
     </div>
   );
 };

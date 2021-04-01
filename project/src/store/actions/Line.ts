@@ -1,2 +1,2 @@
-export const KEY_CHANAGELINEWEIGHT: Line.ChangeLineWeightType = 'changeLineWeight';
-export const KEY_CHANAGELINECOLOR: Line.ChangeLineColorType = 'changeLineColor';
+export const KEY_CHANAGELINEWEIGHT: LineActionType.ChangeLineWeightType = 'changeLineWeight';
+export const KEY_CHANAGELINECOLOR: LineActionType.ChangeLineColorType = 'changeLineColor';

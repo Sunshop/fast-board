@@ -2,7 +2,7 @@
  * redux action type
  */
 
-declare namespace Line {
+declare namespace LineActionType {
   type ChangeLineWeightType = 'changeLineWeight';
   type ChangeLineColorType = 'changeLineColor';
   type ActionType = ChangeLineWeightActionType | ChangeLineColorActionType;
@@ -18,10 +18,13 @@ declare namespace Line {
 
 declare namespace CurType {
   type ChangeCurType = 'changeCurType';
-  type ActionType = ChangeLineWeightActionType;
+  type ActionType = ChangeCurTypeActionType;
 
   interface ChangeCurTypeActionType {
     type: ChangeCurType,
-    value: SvgContentType,
+    value: {
+      curType: SvgChildType,
+      parent: SvgMainType,
+    },
   }
 }

@@ -14,12 +14,12 @@ import {
 const lineWeightInitState: LineInfoType = {
   id: '123',
   path: '',
-  weight: 1,
-  color: '',
+  weight: 3,
+  color: '#000000',
   type: '',
 };
 
-const LineReducer = (state: LineInfoType = lineWeightInitState, action: Line.ActionType): LineInfoType => {
+const LineReducer = (state: LineInfoType = lineWeightInitState, action: LineActionType.ActionType): LineInfoType => {
   switch (action.type) {
     case KEY_CHANAGELINEWEIGHT: {
       console.log('CHANAGELINEWEIGHT', state, action);
