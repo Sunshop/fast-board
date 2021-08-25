@@ -23,7 +23,8 @@ export default {
 	position: fixed;
 	top: 20px;
 	left: 20px;
-	width: 100px;
+	width: 50px;
 	background-color: #fff;
+	border-radius: 6px;
 }
 </style>
