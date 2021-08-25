@@ -1,9 +1,15 @@
 <template>
 	<div class="container">123</div>
+	<Toolbar />
 </template>
 
 <script>
+import Toolbar from "../components/toolbar/Toolbar.vue";
+
 export default {
+	components: {
+		Toolbar,
+	},
 	created() {
 		// console.log(123);
 	},
