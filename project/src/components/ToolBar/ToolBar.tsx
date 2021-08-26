@@ -1,27 +1,19 @@
-import { RootState } from '@/store';
 import React, {
   useState,
-  useEffect,
   useMemo,
   useCallback,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { RootState } from '@/store';
 import {
   MemoIconFc,
+  MemoChildContent,
   ToolObjType,
   ToolChildType,
   ToolListType,
 } from './Common';
 import './ToolBar.less';
-
-const initToolObj: ToolObjType = {
-  id: '',
-  icon: '',
-  actIcon: '',
-  key: 'line',
-  action: '',
-};
 
 const lineToolList: ToolListType = [
   [
@@ -29,31 +21,42 @@ const lineToolList: ToolListType = [
       id: '1',
       icon: '//ps.veazer.cn/images/pencil.png',
       actIcon: '//ps.veazer.cn/images/pencil-act.png',
-      key: 'line',
-      action: '',
+      parent: 'line',
+      key: 'handLine',
     },
     {
       id: '2',
       icon: '//ps.veazer.cn/images/line-alt.png',
       actIcon: '//ps.veazer.cn/images/line-alt-act.png',
-      key: 'line',
-      action: '',
+      parent: 'line',
+      key: 'straightLine',
     },
   ],
   [
     {
       id: '3',
-      icon: '//ps.veazer.cn/images/pencil.png',
-      actIcon: '//ps.veazer.cn/images/pencil-act.png',
-      key: 'img',
-      action: '',
+      icon: '//ps.veazer.cn/images/text.png',
+      actIcon: '//ps.veazer.cn/images/text-act.png',
+      parent: 'text',
+      key: 'text',
     },
+  ],
+  [
     {
       id: '4',
-      icon: '//ps.veazer.cn/images/line-alt.png',
-      actIcon: '//ps.veazer.cn/images/line-alt-act.png',
+      icon: '//ps.veazer.cn/images/img.png',
+      actIcon: '//ps.veazer.cn/images/img-act.png',
+      parent: 'img',
       key: 'img',
-      action: '',
+    },
+  ],
+  [
+    {
+      id: '5',
+      icon: '//ps.veazer.cn/images/tip.png',
+      actIcon: '//ps.veazer.cn/images/tip-act.png',
+      parent: 'tip',
+      key: 'tip',
     },
   ],
 ];
@@ -64,71 +67,54 @@ interface ToolItemType {
 
 const ToolItem: React.FC<ToolItemType> = (props: ToolItemType) => {
   const { list } = props;
-  const [childShow, setChildShow] = useState(false);
-  const [childShowIndex, setChildShowIndex] = useState(-1);
   const CurTypeStore = useSelector((state: RootState) => (state.CurType));
-  const [main, setMain] = useState<ToolObjType>(initToolObj);
-
+  const [childShow, setChildShow] = useState(false);
+  const [main, setMain] = useState<ToolObjType>(list[0]);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setMain(list[0]);
-    console.log(CurTypeStore);
-  }, []);
-
-  const setMainFn = (item: ToolObjType) => {
-    setMain(item);
-    setChildShow(false);
-    console.log(item.key);
+  const upCurType = (e: ToolObjType) => {
     const params: CurType.ChangeCurTypeActionType = {
       type: 'changeCurType',
-      value: item.key,
+      value: {
+        curType: e.key,
+        parent: e.parent,
+      },
     };
     dispatch(params);
   };
 
-  console.log('ToolItem render');
+  const onSelectFn = useCallback((item: ToolObjType) => {
+    setMain(item);
+    upCurType(item);
+  }, [CurTypeStore]);
+
+  const mainClick = (e: ToolObjType) => {
+    upCurType(e);
+  };
 
   return (
     <div
       className="tool-item"
       onMouseEnter={() => setChildShow(true)}
       onMouseLeave={() => setChildShow(false)}
-      key={main?.id}
     >
-      <div className="main">
+      <div className="main" onClick={() => mainClick(main)}>
         <MemoIconFc
           item={useMemo(() => ({
-            show: childShow || CurTypeStore.curType === main.key,
+            show: childShow || CurTypeStore.parent === main.parent,
             icon: main.icon,
             actIcon: main.actIcon,
-          }), [childShow, main, CurTypeStore.curType])}
+          }), [childShow, main, CurTypeStore.parent])}
         />
       </div>
-      <div className={`child-box ${childShow ? 'show' : ''}`} key="index">
-        <div className="child-content">
-          {
-            list.map((item, index) => (
-              <div
-                className="child-item"
-                key={item.id}
-                onMouseEnter={() => setChildShowIndex(index)}
-                onMouseLeave={() => setChildShowIndex(-1)}
-                onClick={() => setMainFn(item)}
-              >
-                <MemoIconFc
-                  item={useMemo(() => ({
-                    show: index === childShowIndex,
-                    icon: item.icon,
-                    actIcon: item.actIcon,
-                  }), [item, childShowIndex])}
-                />
-              </div>
-            ))
-          }
-        </div>
-        <div className="arrow" />
-      </div>
+      {
+        list.length > 1 && (
+          <div className={`child-box ${childShow ? 'show' : ''}`} key="index">
+            <MemoChildContent list={useMemo(() => (list), [])} onSelect={onSelectFn} />
+            <div className="arrow" />
+          </div>
+        )
+      }
     </div>
   );
 };
@@ -138,7 +124,7 @@ const ToolBox: React.FC = () => {
   return (
     <div className="tool-container">
       {
-        lineToolList.map((item) => <ToolItem list={item} />)
+        lineToolList.map((item, index) => <ToolItem key={index.toString()} list={item} />)
       }
       {/* <div className="tool-wrapper">颜色</div> */}
     </div>

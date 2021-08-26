@@ -14,7 +14,12 @@
 //   [P in keyof T]?: T[P];
 // };
 
-declare type SvgContentType = 'line' | 'img' | 'text' | 'tip';
+declare type SvgMainType = 'line' | 'img' | 'text' | 'tip';
+
+declare type SvgChildLineType = 'straightLine' | 'handLine';
+
+declare type SvgChildType = SvgChildLineType | SvgMainType;
+// declare type Svg
 
 interface LineInfoType {
   id: string,
@@ -35,7 +40,7 @@ interface ImgType {
 }
 
 interface PathInfoType {
-  type: SvgContentType,
+  type: SvgChildType,
   value: LineInfoType | ImgType,
 }
 

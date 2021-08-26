@@ -6,19 +6,22 @@
 import { KEY_CHANAGECURTTYPE } from '../actions/CurType';
 
 interface CurType {
-  curType: SvgContentType,
+  curType: SvgChildType,
+  parent: SvgMainType,
 }
 
 const curInitData: CurType = {
-  curType: 'line',
+  curType: 'handLine',
+  parent: 'line',
 };
 
-const CurTypeReducer = (state: CurType = curInitData, action: CurType.ChangeCurTypeActionType): CurType => {
+const CurTypeReducer = (state: CurType = curInitData, action: CurType.ActionType): CurType => {
   switch (action.type) {
     case KEY_CHANAGECURTTYPE: {
       return {
         ...state,
-        curType: action.value,
+        curType: action.value.curType,
+        parent: action.value.parent,
       };
     }
     default:

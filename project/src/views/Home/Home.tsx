@@ -8,8 +8,7 @@ import { ToolBar } from '@/components/ToolBar/ToolBar';
 const Home: React.FC = () => {
   useEffect(() => {
     document.title = '画板';
-  });
-
+  }, []);
   return (
     <div>
       <Board />
