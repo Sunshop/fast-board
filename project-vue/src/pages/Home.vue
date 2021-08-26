@@ -1,8 +1,10 @@
 <template>
-	<div class="container">x:0,y:0</div>
-	<div class="container">{{ count }}</div>
-	<div class="container" @click="change">12312312</div>
-	<Toolbar />
+	<div class="home">
+		<div class="container">x:0,y:0</div>
+		<div class="container">{{ count }}</div>
+		<el-button type="primary" @click="change">测试</el-button>
+		<Toolbar />
+	</div>
 </template>
 
 <script>
@@ -31,5 +33,9 @@ export default {
 <style lang="less" scoped>
 .container {
 	color: red;
+}
+
+.home {
+	padding: 100px;
 }
 </style>
