@@ -6,10 +6,11 @@
 			:key="index"
 			@mouseenter="() => enter(item)"
 			@mouseleave="() => leave(item)"
+			@click="() => select(item)"
 		>
 			<div class="toolbar-item-icon">
-				<img v-show="item.type == curMenuMain || item.type == curMenuHover" :src="item.icon" />
-				<img v-show="item.type != curMenuMain || item.type == curMenuHover" :src="item.actIcon" />
+				<img v-show="item.type != curMenuMain && item.type != curMenuHover" :src="item.icon" />
+				<img v-show="item.type == curMenuMain || item.type == curMenuHover" :src="item.actIcon" />
 			</div>
 		</div>
 	</div>
@@ -63,6 +64,10 @@ export default {
 
 		leave() {
 			this.curMenuHover = '';
+		},
+
+		select(item) {
+			this.curMenuMain = item.type;
 		},
 	},
 };

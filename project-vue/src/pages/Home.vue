@@ -1,5 +1,7 @@
 <template>
-	<div class="container">123</div>
+	<div class="container">x:0,y:0</div>
+	<div class="container">{{ count }}</div>
+	<div class="container" @click="change">12312312</div>
 	<Toolbar />
 </template>
 
@@ -12,6 +14,16 @@ export default {
 	},
 	created() {
 		// console.log(123);
+	},
+	computed: {
+		count() {
+			return this.$store.state.status.count;
+		},
+	},
+	methods: {
+		change() {
+			this.$store.commit('increment', 10);
+		},
 	},
 };
 </script>
