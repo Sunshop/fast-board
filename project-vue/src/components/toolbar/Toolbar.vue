@@ -1,9 +1,16 @@
 <template>
 	<div class="toolbar">
-		<div class="toolbar-item" v-for="(item, index) in menuList" :key="index">
+		<div
+			class="toolbar-item"
+			v-for="(item, index) in menuList"
+			:key="index"
+			@mouseenter="() => enter(item)"
+			@mouseleave="() => leave(item)"
+			@click="() => select(item)"
+		>
 			<div class="toolbar-item-icon">
-				<img v-show="item.type == curMenuMain" :src="item.icon" />
-				<img v-show="item.type != curMenuMain" :src="item.actIcon" />
+				<img v-show="item.type != curMenuMain && item.type != curMenuHover" :src="item.icon" />
+				<img v-show="item.type == curMenuMain || item.type == curMenuHover" :src="item.actIcon" />
 			</div>
 		</div>
 	</div>
@@ -13,52 +20,56 @@
 export default {
 	data() {
 		return {
-			curMenu: "",
-			curMenuMain: "pencil",
+			curMenuHover: '',
+			curMenuMain: 'pencil',
 			menuList: [
 				{
-					name: "笔",
-					type: "pencil",
-					icon: "./img/pencil.png",
-					actIcon: "./img/pencil-act.png",
+					name: '笔',
+					type: 'pencil',
+					icon: './img/pencil.png',
+					actIcon: './img/pencil-act.png',
 				},
 				{
-					name: "线",
-					type: "line",
-					icon: "./img/line.png",
-					actIcon: "./img/line-act.png",
-					children: [
-						{
-							name: "直线",
-							type: "straight-line",
-							icon: "",
-							actIcon: "",
-						},
-					],
+					name: '线',
+					type: 'line',
+					icon: './img/line.png',
+					actIcon: './img/line-act.png',
 				},
 				{
-					name: "文字",
-					type: "text",
-					icon: "./img/text.png",
-					actIcon: "./img/text-act.png",
+					name: '文字',
+					type: 'text',
+					icon: './img/text.png',
+					actIcon: './img/text-act.png',
 				},
 				{
-					name: "图片",
-					type: "img",
-					icon: "./img/img.png",
-					actIcon: "./img/img-act.png",
+					name: '图片',
+					type: 'img',
+					icon: './img/img.png',
+					actIcon: './img/img-act.png',
 				},
 				{
-					name: "文件",
-					type: "file",
-					icon: "./img/file.png",
-					actIcon: "./img/file-act.png",
+					name: '文件',
+					type: 'file',
+					icon: './img/file.png',
+					actIcon: './img/file-act.png',
 				},
 			],
 		};
 	},
 	created() {},
-	methods: {},
+	methods: {
+		enter(item) {
+			this.curMenuHover = item.type;
+		},
+
+		leave() {
+			this.curMenuHover = '';
+		},
+
+		select(item) {
+			this.curMenuMain = item.type;
+		},
+	},
 };
 </script>
 
@@ -67,18 +78,16 @@ export default {
 	position: fixed;
 	top: 20px;
 	left: 20px;
-	width: 50px;
 	background-color: #fff;
 	border-radius: 6px;
 	cursor: pointer;
 
 	.toolbar-item {
-		width: 40px;
-		height: 40px;
+		padding: 10px;
 
 		.toolbar-item-icon {
-			width: 40px;
-			height: 40px;
+			width: 28px;
+			height: 28px;
 
 			& > img {
 				width: 100%;
