@@ -16,8 +16,8 @@
 						:d="item.value.path"
 						fill="none"
 						stroke="red"
-						strokeWidth="3"
-						strokeLinejoin="round"
+						stroke-width="3"
+						stroke-linejoin="round"
 					/>
 				</template>
 			</template>
