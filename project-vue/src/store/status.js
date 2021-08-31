@@ -6,7 +6,6 @@ import { SET_DRAW } from './mutationType';
 
 const status = {
 	state: () => ({
-		count: 0,
 		drawList: drawList, // 画笔 list
 		curDraw: drawList[0].type, // 当前 画笔
 		lineStyle: {
@@ -16,9 +15,6 @@ const status = {
 	}),
 
 	mutations: {
-		increment(state, num) {
-			state.count += num;
-		},
 		// 设置当前画笔
 		[SET_DRAW](state, draw) {
 			state.curDraw = draw;
