@@ -9,8 +9,8 @@
 			@click="() => select(item)"
 		>
 			<div class="toolbar-item-icon">
-				<img v-show="item.type != curMenuMain && item.type != curMenuHover" :src="item.icon" />
-				<img v-show="item.type == curMenuMain || item.type == curMenuHover" :src="item.actIcon" />
+				<img v-show="item.type != curDraw && item.type != curMenuHover" :src="item.icon" />
+				<img v-show="item.type == curDraw || item.type == curMenuHover" :src="item.actIcon" />
 			</div>
 		</div>
 	</div>
@@ -19,18 +19,18 @@
 <script>
 import { mapState } from 'vuex';
 
+import { SET_DRAW } from '../../store/mutationType';
+
 export default {
 	data() {
 		return {
 			curMenuHover: '',
-			curMenuMain: 'pencil',
 		};
 	},
 	computed: {
 		...mapState({
-			drawList: (state) => {
-				return state.status.drawList;
-			},
+			drawList: (state) => state.status.drawList,
+			curDraw: (state) => state.status.curDraw,
 		}),
 	},
 	methods: {
@@ -46,8 +46,7 @@ export default {
 
 		// 选择
 		select(item) {
-			this.curMenuMain = item.type;
-			this.$store.commit('setDraw', item.type);
+			this.$store.commit(SET_DRAW, item.type);
 		},
 	},
 };
@@ -61,6 +60,7 @@ export default {
 	background-color: #fff;
 	border-radius: 6px;
 	cursor: pointer;
+	z-index: 1000;
 
 	.toolbar-item {
 		padding: 10px;
