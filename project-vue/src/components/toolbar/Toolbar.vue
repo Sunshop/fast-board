@@ -2,72 +2,51 @@
 	<div class="toolbar">
 		<div
 			class="toolbar-item"
-			v-for="(item, index) in menuList"
+			v-for="(item, index) in drawList"
 			:key="index"
 			@mouseenter="() => enter(item)"
 			@mouseleave="() => leave(item)"
 			@click="() => select(item)"
 		>
 			<div class="toolbar-item-icon">
-				<img v-show="item.type != curMenuMain && item.type != curMenuHover" :src="item.icon" />
-				<img v-show="item.type == curMenuMain || item.type == curMenuHover" :src="item.actIcon" />
+				<img v-show="item.type != curDraw && item.type != curMenuHover" :src="item.icon" />
+				<img v-show="item.type == curDraw || item.type == curMenuHover" :src="item.actIcon" />
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
+import { SET_DRAW } from '../../store/mutationType';
+
 export default {
 	data() {
 		return {
 			curMenuHover: '',
-			curMenuMain: 'pencil',
-			menuList: [
-				{
-					name: '笔',
-					type: 'pencil',
-					icon: './img/pencil.png',
-					actIcon: './img/pencil-act.png',
-				},
-				{
-					name: '线',
-					type: 'line',
-					icon: './img/line.png',
-					actIcon: './img/line-act.png',
-				},
-				{
-					name: '文字',
-					type: 'text',
-					icon: './img/text.png',
-					actIcon: './img/text-act.png',
-				},
-				{
-					name: '图片',
-					type: 'img',
-					icon: './img/img.png',
-					actIcon: './img/img-act.png',
-				},
-				{
-					name: '文件',
-					type: 'file',
-					icon: './img/file.png',
-					actIcon: './img/file-act.png',
-				},
-			],
 		};
 	},
-	created() {},
+	computed: {
+		...mapState({
+			drawList: (state) => state.status.drawList,
+			curDraw: (state) => state.status.curDraw,
+		}),
+	},
 	methods: {
+		// 进入
 		enter(item) {
 			this.curMenuHover = item.type;
 		},
 
+		// 离开
 		leave() {
 			this.curMenuHover = '';
 		},
 
+		// 选择
 		select(item) {
-			this.curMenuMain = item.type;
+			this.$store.commit(SET_DRAW, item.type);
 		},
 	},
 };
@@ -81,6 +60,7 @@ export default {
 	background-color: #fff;
 	border-radius: 6px;
 	cursor: pointer;
+	z-index: 1000;
 
 	.toolbar-item {
 		padding: 10px;
@@ -92,6 +72,10 @@ export default {
 			& > img {
 				width: 100%;
 				height: 100%;
+				user-select: none;
+				overflow: hidden;
+				display: block;
+				pointer-events: none; // 需要了解
 			}
 		}
 	}
