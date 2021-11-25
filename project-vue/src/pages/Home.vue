@@ -3,6 +3,7 @@
 		<Toolbar />
 		<Board />
 		<Clear />
+		<el-button type="primary" @click="getData">test</el-button>
 	</div>
 </template>
 
@@ -16,6 +17,31 @@ export default {
 		Board,
 		Toolbar,
 		Clear,
+	},
+
+	created() {
+		this.listenPaste();
+	},
+
+	methods: {
+		// 监听剪切板
+		listenPaste() {
+			document.addEventListener('paste', function (event) {
+				console.log(event);
+				if (event.clipboardData || event.originalEvent) {
+					var clipboardData = event.clipboardData || window.clipboardData;
+					var val = clipboardData.getData('text');
+					console.log(val);
+					event.preventDefault();
+				}
+			});
+		},
+
+		getData() {
+			navigator.clipboard.readText().then((v) => {
+				console.log(v);
+			});
+		},
 	},
 };
 </script>
